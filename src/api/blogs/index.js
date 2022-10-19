@@ -157,7 +157,7 @@ blogsRouter.put("/:blogId/comments/:commentId", async (req, res, next) => {
 
       if (index !== -1) {
         blog.comments[index] = {
-          ...blog.comments[index].toObject(),
+          ...blog.comments[index],
           ...req.body,
         };
 
