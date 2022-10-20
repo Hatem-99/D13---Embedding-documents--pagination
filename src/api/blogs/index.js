@@ -1,7 +1,7 @@
 import express from "express";
 import createHttpError from "http-errors";
 import blogModel from "./model.js";
-import commentsModel from "../comments/model.js";
+
 
 const blogsRouter = express.Router();
 
@@ -72,14 +72,14 @@ blogsRouter.delete("/:blogID", async (req, res, next) => {
 
 blogsRouter.post("/:blogId/comments", async (req, res, next) => {
   try {
-    const comment = await commentsModel.create(req.body);
+    let blogPost = await blogModel.findById(req.params.blogId);
 
-    if (comment) {
+    if (blogPost) {
+      const comment = req.body;
+
       const commentToInsert = {
-        ...comment.toObject(),
+        ...comment,
       };
-
-      console.log("COMMENT TO INSERT: ", commentToInsert);
 
       const updatedBlog = await blogModel.findByIdAndUpdate(
         req.params.blogId,
@@ -165,7 +165,10 @@ blogsRouter.put("/:blogId/comments/:commentId", async (req, res, next) => {
         res.send(blog);
       } else {
         next(
-          createHttpError(404, `comment with id ${req.body.commentId} not found!`)
+          createHttpError(
+            404,
+            `comment with id ${req.body.commentId} not found!`
+          )
         );
       }
     } else {
@@ -174,7 +177,7 @@ blogsRouter.put("/:blogId/comments/:commentId", async (req, res, next) => {
       );
     }
   } catch (error) {
-    console.log("this", error)
+    console.log("this", error);
     next(error);
   }
 });

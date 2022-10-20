@@ -10,7 +10,7 @@ commentsRouter.get("/", async (req, res, next) => {
 
     const total = await commentsModel.countDocuments(mongoQuery.criteria);
 
-    const books = await commentsModel
+    const comments = await commentsModel
       .find(mongoQuery.criteria, mongoQuery.options.fields)
       .skip(mongoQuery.options.skip)
       .limit(mongoQuery.options.limit)
@@ -19,7 +19,7 @@ commentsRouter.get("/", async (req, res, next) => {
       links: mongoQuery.links("http://localhost:3002/blogs", total),
       total,
       totalPages: Math.ceil(total / mongoQuery.options.limit),
-      books,
+      comments,
     });
   } catch (error) {
     next(error);
